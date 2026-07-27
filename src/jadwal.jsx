@@ -230,6 +230,8 @@ export default function App() {
   const [stageFilter, setStageFilter] = useState("Semua");
   const [groupFilter, setGroupFilter] = useState("Semua");
   const [search, setSearch] = useState("");
+  const [competition, setCompetition] = useState("wc"); // "wc" | "aff"
+  const icWC = "https://upload.wikimedia.org/wikipedia/id/thumb/1/17/2026_FIFA_World_Cup_emblem.svg/250px-2026_FIFA_World_Cup_emblem.svg.png";
 
   // Helper function to get country name by ID
   const getCountryName = (id) => {
@@ -268,15 +270,18 @@ export default function App() {
   const weekCount = (w) => matches.filter(m => m.week === w).length;
 
   return (
-    <div style={{ fontFamily: "'Inter', system-ui, sans-serif", margin: 0, minHeight: "100vh", background: "#0a0e1a", color: "#e2e8f0" }}>
+    <div>
       
       {/* HERO CHAMPION BANNER */}
       <div style={{ background:"linear-gradient(135deg,#78350f,#92400e,#78350f)", borderBottom:"2px solid #fbbf24", padding:"16px 20px", textAlign:"center" }}>
-        <div style={{ fontSize:28 }}>🏆</div>
+        <div style={{ fontSize:28 }}>
+          <img src={icWC} alt="Piala Dunia 2026" style={{ width: 50, height: 58, margin: "10px 0", verticalAlign: "middle" }} />
+        </div>
         <div style={{ fontSize:20, fontWeight:900, color:"#fbbf24", letterSpacing:1 }}>SPANYOL JUARA DUNIA 2026!</div>
         <div style={{ fontSize:13, color:"#fde68a", marginTop:2 }}>Spanyol 1–0 Argentina · MetLife Stadium, New Jersey · Senin, 20 Jul 2026</div>
       </div>
 
+    
       {/* Hero */}
       <div style={{ background: "linear-gradient(135deg, #0a0e1a 0%, #1a1f3a 40%, #0d2244 100%)", borderBottom: "1px solid #1e3a6e", padding: "28px 20px 20px" }}>
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
@@ -296,78 +301,81 @@ export default function App() {
         </div>
       </div>
 
-      {/* === WEEKLY TABS === */}
-      <div style={{ background: "#070c18", borderBottom: "2px solid #0f172a", overflowX: "auto" }}>
-        <div style={{ maxWidth: 960, margin: "0 auto", display: "flex", padding: "0 12px" }}>
-          {[0, 1, 2, 3, 4, 5, 6].map(w => {
-            const active = weekFilter === w;
-            const col = weekColors[w] || "#3b82f6";
-            return (
-              <button key={w} onClick={() => setWeekFilter(w)}
-                style={{
-                  flexShrink: 0, padding: "12px 14px", border: "none", cursor: "pointer",
-                  background: "transparent", fontSize: 12, fontWeight: active ? 800 : 500,
-                  color: active ? col : "#475569",
-                  borderBottom: active ? `3px solid ${col}` : "3px solid transparent",
-                  transition: "all 0.15s", lineHeight: 1.3, textAlign: "center"
-                }}>
-                {w === 0 ? (
-                  <span>Semua<br /><span style={{ fontSize: 10, opacity: 0.7 }}>104 laga</span></span>
-                ) : (
-                  <span>Pekan {w}<br /><span style={{ fontSize: 10, opacity: 0.7 }}>{weekCount(w)} laga</span></span>
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      <div style={{background: `linear-gradient(90deg, ${weekColors[weekFilter]}22 0%, transparent 80%)`, borderBottom: `1px solid ${weekColors[weekFilter]}33`,position: "sticky", top: 58, zIndex: 9}}>
 
-      {/* Active week banner */}
-      {weekFilter !== 0 && (
-        <div style={{ background: `linear-gradient(90deg, ${weekColors[weekFilter]}22 0%, transparent 100%)`, borderBottom: `1px solid ${weekColors[weekFilter]}33`, padding: "8px 20px" }}>
-          <div style={{ maxWidth: 960, margin: "0 auto", display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ width: 8, height: 8, borderRadius: "50%", background: weekColors[weekFilter], display: "inline-block", flexShrink: 0 }}></span>
-            <span style={{ fontSize: 13, fontWeight: 700, color: weekColors[weekFilter] }}>{weekLabels[weekFilter]}</span>
-            <span style={{ fontSize: 12, color: "#475569" }}>— {filtered.length} pertandingan</span>
-          </div>
-        </div>
-      )}
-
-      {/* Filters */}
-      <div style={{ background: "#0f1628", borderBottom: "1px solid #1e293b", padding: "12px 20px", position: "sticky", top: 0, zIndex: 10 }}>
-        <div style={{ maxWidth: 960, margin: "0 auto", display: "flex", flexDirection: "column", gap: 8 }}>
-          <input
-            placeholder="🔍  Cari tim, venue, tanggal..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 8, padding: "7px 12px", color: "#e2e8f0", fontSize: 13, width: "100%", boxSizing: "border-box" }}
-          />
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-            {stages.map(s => (
-              <button key={s.id} onClick={() => setStageFilter(s.name)}
-                style={{
-                  padding: "3px 10px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 11, fontWeight: 600,
-                  background: stageFilter === s.name ? "#3b82f6" : "#1e293b",
-                  color: stageFilter === s.name ? "#fff" : "#94a3b8"
-                }}>
-                {s.name}
-              </button>
-            ))}
-          </div>
-          {(stageFilter === "Semua" || stageFilter === "Fase Grup") && (
-            <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-              {groups.map(g => (
-                <button key={g} onClick={() => setGroupFilter(g)}
+        {/* === WEEKLY TABS === */}
+        <div style={{ background: "#070c18", borderBottom: "2px solid #0f172a", overflowX: "auto" }}>
+          <div style={{ maxWidth: 960, margin: "0 auto", display: "flex", padding: "0 12px" }}>
+            {[0, 1, 2, 3, 4, 5, 6].map(w => {
+              const active = weekFilter === w;
+              const col = weekColors[w] || "#3b82f6";
+              return (
+                <button key={w} onClick={() => setWeekFilter(w)}
                   style={{
-                    padding: "3px 9px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 11, fontWeight: 700,
-                    background: groupFilter === g ? "#ef4444" : "#1e293b",
-                    color: groupFilter === g ? "#fff" : "#64748b"
+                    flexShrink: 0, padding: "12px 14px", border: "none", cursor: "pointer",
+                    background: "transparent", fontSize: 12, fontWeight: active ? 800 : 500,
+                    color: active ? col : "#475569",
+                    borderBottom: active ? `3px solid ${col}` : "3px solid transparent",
+                    transition: "all 0.15s", lineHeight: 1.3, textAlign: "center"
                   }}>
-                  {g === "Semua" ? "Semua Grup" : `Grup ${g}`}
+                  {w === 0 ? (
+                    <span>Semua<br /><span style={{ fontSize: 10, opacity: 0.7 }}>104 laga</span></span>
+                  ) : (
+                    <span>Pekan {w}<br /><span style={{ fontSize: 10, opacity: 0.7 }}>{weekCount(w)} laga</span></span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Active week banner */}
+        {weekFilter !== 0 && (
+          <div style={{ background: `linear-gradient(90deg, ${weekColors[weekFilter]}22 0%, transparent 100%)`, borderBottom: `1px solid ${weekColors[weekFilter]}33`, padding: "8px 20px" }}>
+            <div style={{ maxWidth: 960, margin: "0 auto", display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: weekColors[weekFilter], display: "inline-block", flexShrink: 0 }}></span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: weekColors[weekFilter] }}>{weekLabels[weekFilter]}</span>
+              <span style={{ fontSize: 12, color: "#475569" }}>— {filtered.length} pertandingan</span>
+            </div>
+          </div>
+        )}
+
+        {/* Filters */}
+        <div style={{ background: "#0f1628", borderBottom: "1px solid #1e293b", padding: "12px 20px" }}>
+          <div style={{ maxWidth: 960, margin: "0 auto", display: "flex", flexDirection: "column", gap: 8 }}>
+            <input
+              placeholder="🔍  Cari tim, venue, tanggal..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 8, padding: "7px 12px", color: "#e2e8f0", fontSize: 13, width: "100%", boxSizing: "border-box" }}
+            />
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+              {stages.map(s => (
+                <button key={s.id} onClick={() => setStageFilter(s.name)}
+                  style={{
+                    padding: "3px 10px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 11, fontWeight: 600,
+                    background: stageFilter === s.name ? "#3b82f6" : "#1e293b",
+                    color: stageFilter === s.name ? "#fff" : "#94a3b8"
+                  }}>
+                  {s.name}
                 </button>
               ))}
             </div>
-          )}
+            {(stageFilter === "Semua" || stageFilter === "Fase Grup") && (
+              <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+                {groups.map(g => (
+                  <button key={g} onClick={() => setGroupFilter(g)}
+                    style={{
+                      padding: "3px 9px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 11, fontWeight: 700,
+                      background: groupFilter === g ? "#ef4444" : "#1e293b",
+                      color: groupFilter === g ? "#fff" : "#64748b"
+                    }}>
+                    {g === "Semua" ? "Semua Grup" : `Grup ${g}`}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
